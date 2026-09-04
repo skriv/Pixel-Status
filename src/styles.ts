@@ -31,6 +31,7 @@ export const DEFAULTS = {
   glow: false,
   gap: 0,
   paused: false,
+  text: '404',
 };
 
 export const STYLES = /* css */ `
@@ -50,10 +51,10 @@ export const STYLES = /* css */ `
   --ps-hover-color: ${DEFAULTS.hoverColor};
   --ps-fade: ${DEFAULTS.fade}ms;
   --ps-easing: ${DEFAULTS.easing};
-  --ps-cell: ${3 * DEFAULTS.size}px;
+  --ps-cell: ${DEFAULTS.size}px;
   --ps-hover-stagger: 0ms;
-  --ps-w: ${53 * DEFAULTS.size};
-  --ps-h: ${24 * DEFAULTS.size};
+  --ps-w: 0;
+  --ps-h: 0;
 }
 :host([hidden]) { display: none; }
 

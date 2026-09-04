@@ -18,6 +18,9 @@ const EASING_OPTIONS = [
 ];
 
 const CONFIG = {
+  content: {
+    text: { type: 'text' as const, default: DEFAULTS.text, placeholder: 'Type here…' },
+  },
   timing: {
     speed: [DEFAULTS.speed, 40, 800] as [number, number, number],
     fade: [DEFAULTS.fade, 50, 1200] as [number, number, number],
@@ -46,7 +49,7 @@ const CONFIG = {
         { value: 'design', label: 'Design' },
         { value: 'ltr', label: 'Scanline' },
         { value: 'random', label: 'Random' },
-        { value: 'digits', label: 'By digit' },
+        { value: 'chars', label: 'By character' },
       ],
       default: DEFAULTS.order,
     },
@@ -119,6 +122,7 @@ function Playground() {
   useEffect(() => {
     const el = elRef.current;
     if (!el) return;
+    el.text = params.content.text;
     el.color = params.colors.cubeColor;
     el.appearColor = params.colors.appearColor;
     el.hoverColor = params.colors.hoverColor;
@@ -135,6 +139,7 @@ function Playground() {
   }, [params, paused]);
 
   const snippet = buildSnippet({
+    text: params.content.text,
     color: params.colors.cubeColor,
     appearColor: params.colors.appearColor,
     hoverColor: params.colors.hoverColor,
@@ -188,8 +193,8 @@ export function App() {
         <header>
           <h1>&lt;pixel-status&gt;</h1>
           <p>
-            Pixel-art 404. Cubes stay visible in their color; appear color
-            overlays them one by one. Hover tints the whole glyph.
+            Pixel text in Departure Mono. Cubes stay visible; appear color
+            overlays them one by one. Type in the DialKit panel.
           </p>
         </header>
         <h2>Playground</h2>

@@ -1,6 +1,7 @@
 import type { PixelOrder } from '../pixels';
 
 export type SnippetOpts = {
+  text: string;
   color: string;
   appearColor: string;
   hoverColor: string;
@@ -23,6 +24,7 @@ function attr(name: string, value: string | number | boolean, fallback: string |
 
 export function buildSnippet(p: SnippetOpts): string {
   const lines = [
+    attr('text', p.text, '404'),
     attr('color', p.color, '#99a1af'),
     attr('appear-color', p.appearColor, '#ffffff'),
     attr('hover-color', p.hoverColor, '#111827'),

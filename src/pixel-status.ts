@@ -1,12 +1,13 @@
+import { isPixelOrder, orderIndices, type Pixel, type PixelOrder } from './pixels';
 import {
-  BASE_HEIGHT,
-  BASE_WIDTH,
   CELL,
-  PIXELS,
-  isPixelOrder,
-  orderIndices,
-  type PixelOrder,
-} from './pixels';
+  clipText,
+  EMPTY_GLYPH,
+  fontFaceCss,
+  loadDepartureMono,
+  rasterize,
+  type Glyph,
+} from './rasterize';
 import { DEFAULTS, STYLES, isEasing } from './styles';
 
 const TAG = 'pixel-status';
@@ -22,11 +23,12 @@ function num(raw: string | null, fallback: number): number {
 }
 
 /**
- * `<pixel-status>` — pixel-art 404 that scans one cube at a time,
+ * `<pixel-status>` — rasterizes `text` with Departure Mono into cubes,
  * then overlays appear-color on the active cubes. Hover tints the whole glyph.
  */
 export class PixelStatus extends HTMLElement {
   static readonly observedAttributes = [
+    'text',
     'color',
     'appear-color',
     'hover-color',
@@ -45,10 +47,12 @@ export class PixelStatus extends HTMLElement {
   #root: ShadowRoot;
   #stage: HTMLElement;
   #pixels: HTMLElement[] = [];
+  #glyph: Glyph = EMPTY_GLYPH;
   #sequence: number[] = [];
   #index = 0;
   #timer: number | null = null;
   #hovering = false;
+  #fontReady = false;
   #boundEnter = () => this.#onHover(true);
   #boundLeave = () => this.#onHover(false);
   #tick = () => {
@@ -64,32 +68,18 @@ export class PixelStatus extends HTMLElement {
     super();
     this.#root = this.attachShadow({ mode: 'open' });
     const style = document.createElement('style');
-    style.textContent = STYLES;
+    style.textContent = `${fontFaceCss()}\n${STYLES}`;
     this.#stage = document.createElement('div');
     this.#stage.className = 'stage';
     this.#stage.part = 'stage';
-    for (const [i, p] of PIXELS.entries()) {
-      const el = document.createElement('span');
-      el.className = 'pixel';
-      el.part = 'pixel';
-      el.style.setProperty('--i', String(i));
-      el.dataset.x = String(p.x);
-      el.dataset.y = String(p.y);
-      const flash = document.createElement('span');
-      flash.className = 'flash';
-      flash.part = 'flash';
-      el.appendChild(flash);
-      this.#pixels.push(el);
-      this.#stage.appendChild(el);
-    }
     this.#root.append(style, this.#stage);
   }
 
   connectedCallback() {
-    this.#syncAll();
+    this.#syncVars();
     this.addEventListener('pointerenter', this.#boundEnter);
     this.addEventListener('pointerleave', this.#boundLeave);
-    this.#arm();
+    void this.#boot();
   }
 
   disconnectedCallback() {
@@ -100,6 +90,10 @@ export class PixelStatus extends HTMLElement {
 
   attributeChangedCallback(name: string) {
     if (!this.isConnected) return;
+    if (name === 'text') {
+      if (this.#fontReady) this.#rebuildGlyph();
+      return;
+    }
     if (name === 'order') this.#rebuildSequence(true);
     this.#syncVars();
     this.#syncLayout();
@@ -116,6 +110,13 @@ export class PixelStatus extends HTMLElement {
   }
 
   /* ----------------------------- typed props ----------------------------- */
+
+  get text(): string {
+    return clipText(this.getAttribute('text') ?? DEFAULTS.text);
+  }
+  set text(v: string) {
+    this.setAttribute('text', v);
+  }
 
   get color(): string {
     return this.getAttribute('color') || DEFAULTS.color;
@@ -168,7 +169,8 @@ export class PixelStatus extends HTMLElement {
   }
 
   get trail(): number {
-    return clamp(Math.round(num(this.getAttribute('trail'), DEFAULTS.trail)), 1, this.#pixels.length);
+    const max = Math.max(1, this.#pixels.length);
+    return clamp(Math.round(num(this.getAttribute('trail'), DEFAULTS.trail)), 1, max);
   }
   set trail(v: number) {
     this.setAttribute('trail', String(v));
@@ -232,11 +234,42 @@ export class PixelStatus extends HTMLElement {
 
   /* ------------------------------ internals ------------------------------ */
 
-  #syncAll() {
-    this.#rebuildSequence(false);
+  async #boot() {
+    try {
+      await loadDepartureMono();
+    } catch {
+      return;
+    }
+    if (!this.isConnected) return;
+    this.#fontReady = true;
+    this.#rebuildGlyph();
+    this.#arm();
+  }
+
+  #rebuildGlyph() {
+    this.#glyph = rasterize(this.text);
+    this.#stage.replaceChildren();
+    this.#pixels = [];
+    for (const [i, p] of this.#glyph.pixels.entries()) {
+      const el = document.createElement('span');
+      el.className = 'pixel';
+      el.part = 'pixel';
+      el.style.setProperty('--i', String(i));
+      el.dataset.x = String(p.x);
+      el.dataset.y = String(p.y);
+      const flash = document.createElement('span');
+      flash.className = 'flash';
+      flash.part = 'flash';
+      el.appendChild(flash);
+      this.#pixels.push(el);
+      this.#stage.appendChild(el);
+    }
+    this.#index = 0;
+    this.#rebuildSequence(true);
     this.#syncVars();
     this.#syncLayout();
-    this.#applyTrail();
+    if (this.#hovering) this.#showAll();
+    else this.#applyTrail();
   }
 
   #syncVars() {
@@ -247,16 +280,17 @@ export class PixelStatus extends HTMLElement {
     this.style.setProperty('--ps-easing', this.easing);
     this.style.setProperty('--ps-hover-stagger', `${this.hoverStagger}ms`);
     const scale = this.size;
-    this.style.setProperty('--ps-w', String(BASE_WIDTH * scale));
-    this.style.setProperty('--ps-h', String(BASE_HEIGHT * scale));
+    this.style.setProperty('--ps-w', String(this.#glyph.width * scale));
+    this.style.setProperty('--ps-h', String(this.#glyph.height * scale));
     const cell = Math.max(1, CELL * scale - this.gap);
     this.style.setProperty('--ps-cell', `${cell}px`);
   }
 
   #syncLayout() {
     const scale = this.size;
+    const pts: readonly Pixel[] = this.#glyph.pixels;
     for (let i = 0; i < this.#pixels.length; i++) {
-      const p = PIXELS[i];
+      const p = pts[i];
       const el = this.#pixels[i];
       el.style.left = `${p.x * scale}px`;
       el.style.top = `${p.y * scale}px`;
@@ -264,17 +298,19 @@ export class PixelStatus extends HTMLElement {
   }
 
   #rebuildSequence(reshuffle: boolean) {
-    if (this.order === 'random' && !reshuffle && this.#sequence.length === PIXELS.length) return;
-    this.#sequence = orderIndices(this.order);
+    const pts = this.#glyph.pixels;
+    if (this.order === 'random' && !reshuffle && this.#sequence.length === pts.length) return;
+    this.#sequence = orderIndices(this.order, pts);
     for (let i = 0; i < this.#sequence.length; i++) {
       const pixelIndex = this.#sequence[i];
-      this.#pixels[pixelIndex].style.setProperty('--i', String(i));
+      this.#pixels[pixelIndex]?.style.setProperty('--i', String(i));
     }
   }
 
   #applyTrail() {
     const n = this.#sequence.length;
-    const trail = this.trail;
+    if (!n) return;
+    const trail = Math.min(this.trail, n);
     const on = new Set<number>();
     for (let t = 0; t < trail; t++) {
       const pos = (this.#index - t + n) % n;
@@ -303,7 +339,7 @@ export class PixelStatus extends HTMLElement {
 
   #arm() {
     this.#clear();
-    if (this.paused || this.#hovering || !this.isConnected) return;
+    if (this.paused || this.#hovering || !this.isConnected || !this.#sequence.length) return;
     this.#timer = window.setTimeout(this.#tick, this.speed);
   }
 
