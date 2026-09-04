@@ -150,14 +150,6 @@ function Playground() {
           dangerouslySetInnerHTML={{ __html: highlightSnippet(snippet) }}
         />
       </div>
-      <a
-        className="repo"
-        href="https://github.com/skriv/Pixel-Status"
-        target="_blank"
-        rel="noreferrer"
-      >
-        github.com/skriv/Pixel-Status
-      </a>
     </div>
   );
 }
@@ -217,6 +209,14 @@ export function App() {
       <div className="wrap">
         <header>
           <h1>&lt;pixel-status&gt;</h1>
+          <a
+            className="repo"
+            href="https://github.com/skriv/Pixel-Status"
+            target="_blank"
+            rel="noreferrer"
+          >
+            https://github.com/skriv/Pixel-Status
+          </a>
         </header>
         <h2>Playground</h2>
         <Playground />

@@ -1,5 +1,7 @@
 # pixel-status
 
+https://github.com/skriv/Pixel-Status
+
 Framework-agnostic `<pixel-status>` Web Component. It rasterizes `text` with [Departure Mono](https://departuremono.com/) into cubes, then scans an appear-color across them. Hover tints the whole glyph.
 
 Design: [Alex Krivov](https://alexkrivov.com)
