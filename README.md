@@ -30,9 +30,9 @@ Or drop in the IIFE bundle:
 <!-- Design: Alex Krivov – alexkrivov.com -->
 <pixel-status
   text="404"
-  color="#ffffff"
-  appear-color="#99A1AF"
-  hover-color="#99A1AF"
+  color="#808080"
+  appear-color="#ffffff"
+  hover-color="#ffffff"
   size="3"
   speed="40"
   fade="80"
@@ -59,9 +59,9 @@ Open the local Vite URL (or the [hosted playground](https://skriv.github.io/Pixe
 | Attribute | Default | Description |
 | --- | --- | --- |
 | `text` | `404` | String to rasterize (max 24 characters) |
-| `color` | `#ffffff` | Idle cube color |
-| `appear-color` | `#99A1AF` | Color of the active trail cubes |
-| `hover-color` | `#99A1AF` | Color when the pointer is over the glyph |
+| `color` | `#808080` | Idle cube color |
+| `appear-color` | `#ffffff` | Color of the active trail cubes |
+| `hover-color` | `#ffffff` | Color when the pointer is over the glyph |
 | `size` | `3` | Scale factor (1–32) |
 | `speed` | `40` | Milliseconds between trail steps |
 | `fade` | `80` | Color transition duration in ms |

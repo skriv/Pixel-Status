@@ -18,9 +18,9 @@ export function isEasing(value: string): boolean {
 }
 
 export const DEFAULTS = {
-  color: '#ffffff',
-  appearColor: '#99A1AF',
-  hoverColor: '#99A1AF',
+  color: '#808080',
+  appearColor: '#ffffff',
+  hoverColor: '#ffffff',
   size: 3,
   speed: 40,
   fade: 80,
