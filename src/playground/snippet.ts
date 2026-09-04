@@ -1,4 +1,5 @@
 import type { PixelOrder } from '../pixels';
+import type { PixelStatus } from '../pixel-status';
 import { creditMarkup } from '../credits';
 
 export type SnippetOpts = {
@@ -39,6 +40,21 @@ export function buildSnippet(p: SnippetOpts): string {
   ].join('');
 
   return `${creditMarkup()}\n<pixel-status${lines}\n></pixel-status>`;
+}
+
+export function applySnippet(el: PixelStatus, p: SnippetOpts): void {
+  el.text = p.text;
+  el.color = p.color;
+  el.appearColor = p.appearColor;
+  el.hoverColor = p.hoverColor;
+  el.size = p.size;
+  el.speed = p.speed;
+  el.fade = p.fade;
+  el.easing = p.easing;
+  el.trail = p.trail;
+  el.order = p.order;
+  el.hoverStagger = p.hoverStagger;
+  el.gap = p.gap;
 }
 
 export function highlightSnippet(code: string): string {

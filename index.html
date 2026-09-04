@@ -109,6 +109,44 @@
         text-decoration: none;
       }
       .repo:hover { color: var(--accent); }
+      .examples {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+      .example {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+      }
+      .example-stage {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 148px;
+        padding: 28px 16px 20px;
+      }
+      .example-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 14px;
+        border-top: 1px solid var(--line);
+      }
+      .example-meta span {
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .example-meta .act {
+        padding: 5px 10px;
+        font-size: 12px;
+      }
+      @media (max-width: 640px) {
+        .examples { grid-template-columns: 1fr; }
+      }
     </style>
   </head>
   <body>

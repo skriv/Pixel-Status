@@ -5,7 +5,8 @@ import 'dialkit/styles.css';
 import { PixelStatus } from '../pixel-status';
 import { DEFAULTS, EASINGS } from '../styles';
 import type { PixelOrder } from '../pixels';
-import { buildSnippet, highlightSnippet } from './snippet';
+import { applySnippet, buildSnippet, highlightSnippet } from './snippet';
+import { EXAMPLES, type ExampleSpec } from './examples';
 
 const EASING_OPTIONS = [
   { value: 'linear', label: 'Linear' },
@@ -89,18 +90,20 @@ function Playground() {
   useEffect(() => {
     const el = elRef.current;
     if (!el) return;
-    el.text = params.content.text;
-    el.color = params.colors.cubeColor;
-    el.appearColor = params.colors.appearColor;
-    el.hoverColor = params.colors.hoverColor;
-    el.size = params.look.size;
-    el.speed = params.timing.speed;
-    el.fade = params.timing.fade;
-    el.easing = params.timing.easing;
-    el.trail = params.motion.trail;
-    el.order = params.motion.order as PixelOrder;
-    el.hoverStagger = params.motion.hoverStagger;
-    el.gap = params.look.gap;
+    applySnippet(el, {
+      text: params.content.text,
+      color: params.colors.cubeColor,
+      appearColor: params.colors.appearColor,
+      hoverColor: params.colors.hoverColor,
+      size: params.look.size,
+      speed: params.timing.speed,
+      fade: params.timing.fade,
+      easing: params.timing.easing,
+      trail: params.motion.trail,
+      order: params.motion.order as PixelOrder,
+      hoverStagger: params.motion.hoverStagger,
+      gap: params.look.gap,
+    });
     el.paused = paused;
   }, [params, paused]);
 
@@ -159,6 +162,55 @@ function Playground() {
   );
 }
 
+function ExampleCard({ spec }: { spec: ExampleSpec }) {
+  const elRef = useRef<PixelStatus | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const el = elRef.current;
+    if (el) applySnippet(el, spec);
+  }, [spec]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(buildSnippet(spec));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <article className="example">
+      <div className="example-stage" style={{ background: spec.bg }}>
+        <pixel-status ref={elRef as React.Ref<HTMLElement>} />
+      </div>
+      <div className="example-meta">
+        <span>{spec.label}</span>
+        <button
+          type="button"
+          className="act"
+          onClick={copy}
+          aria-label={`Copy ${spec.label} specification`}
+        >
+          {copied ? 'Copied!' : 'Copy'}
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function Examples() {
+  return (
+    <div className="examples">
+      {EXAMPLES.map((spec) => (
+        <ExampleCard key={spec.id} spec={spec} />
+      ))}
+    </div>
+  );
+}
+
 export function App() {
   return (
     <>
@@ -168,6 +220,8 @@ export function App() {
         </header>
         <h2>Playground</h2>
         <Playground />
+        <h2>Examples</h2>
+        <Examples />
       </div>
       <DialRoot theme="light" position="top-right" defaultOpen={false} productionEnabled />
     </>
