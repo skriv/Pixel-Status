@@ -20,12 +20,23 @@ Or after `npm run build`, drop in the IIFE bundle:
 
 ```html
 <script src="./dist/pixel-status.min.js"></script>
+<pixel-status></pixel-status>
+```
+
+Defaults (omitted attributes use these values):
+
+```html
 <pixel-status
-  color="#99a1af"
-  appear-color="#ffffff"
-  hover-color="#111827"
-  size="4"
-  speed="120"
+  color="#ffffff"
+  appear-color="#99A1AF"
+  hover-color="#99A1AF"
+  size="3"
+  speed="40"
+  fade="80"
+  easing="cubic-bezier(0.4, 0, 1, 1)"
+  trail="3"
+  order="random"
+  hover-stagger="6"
 ></pixel-status>
 ```
 
@@ -44,16 +55,16 @@ Open the local Vite URL. Adjust timing, colors, trail, scan order, glow, and cop
 
 | Attribute | Default | Description |
 | --- | --- | --- |
-| `color` | `#99a1af` | Idle cube color |
-| `appear-color` | `#ffffff` | Color of the active trail cubes |
-| `hover-color` | `#111827` | Color when the pointer is over the glyph |
-| `size` | `4` | Scale factor (1–32) |
-| `speed` | `120` | Milliseconds between trail steps |
-| `fade` | `280` | Color transition duration in ms |
-| `easing` | `ease-in-out` | CSS easing, including `cubic-bezier(...)` |
-| `trail` | `1` | How many cubes stay lit |
-| `order` | `design` | Scan order: `design`, `ltr`, `random`, `digits` |
-| `hover-stagger` | `0` | Hover fill delay per cube in ms |
+| `color` | `#ffffff` | Idle cube color |
+| `appear-color` | `#99A1AF` | Color of the active trail cubes |
+| `hover-color` | `#99A1AF` | Color when the pointer is over the glyph |
+| `size` | `3` | Scale factor (1–32) |
+| `speed` | `40` | Milliseconds between trail steps |
+| `fade` | `80` | Color transition duration in ms |
+| `easing` | `cubic-bezier(0.4, 0, 1, 1)` | CSS easing, including `cubic-bezier(...)` |
+| `trail` | `3` | How many cubes stay lit |
+| `order` | `random` | Scan order: `design`, `ltr`, `random`, `chars` |
+| `hover-stagger` | `6` | Hover fill delay per cube in ms |
 | `glow` | off | Presence attribute; adds a soft glow |
 | `gap` | `0` | Gap between cubes in px |
 | `paused` | off | Presence attribute; freezes playback |

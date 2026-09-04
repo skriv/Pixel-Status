@@ -1,4 +1,5 @@
 import type { PixelOrder } from '../pixels';
+import { DEFAULTS } from '../styles';
 
 export type SnippetOpts = {
   text: string;
@@ -24,17 +25,17 @@ function attr(name: string, value: string | number | boolean, fallback: string |
 
 export function buildSnippet(p: SnippetOpts): string {
   const lines = [
-    attr('text', p.text, '404'),
-    attr('color', p.color, '#99a1af'),
-    attr('appear-color', p.appearColor, '#ffffff'),
-    attr('hover-color', p.hoverColor, '#111827'),
-    attr('size', p.size, 4),
-    attr('speed', p.speed, 120),
-    attr('fade', p.fade, 280),
-    attr('easing', p.easing, 'ease-in-out'),
-    attr('trail', p.trail, 1),
-    attr('order', p.order, 'design'),
-    attr('hover-stagger', p.hoverStagger, 0),
+    attr('text', p.text, DEFAULTS.text),
+    attr('color', p.color, DEFAULTS.color),
+    attr('appear-color', p.appearColor, DEFAULTS.appearColor),
+    attr('hover-color', p.hoverColor, DEFAULTS.hoverColor),
+    attr('size', p.size, DEFAULTS.size),
+    attr('speed', p.speed, DEFAULTS.speed),
+    attr('fade', p.fade, DEFAULTS.fade),
+    attr('easing', p.easing, DEFAULTS.easing),
+    attr('trail', p.trail, DEFAULTS.trail),
+    attr('order', p.order, DEFAULTS.order),
+    attr('hover-stagger', p.hoverStagger, DEFAULTS.hoverStagger),
     attr('glow', p.glow, false),
     attr('gap', p.gap, 0),
   ].join('');

@@ -34,7 +34,7 @@ const CONFIG = {
     cubeColor: DEFAULTS.color,
     appearColor: DEFAULTS.appearColor,
     hoverColor: DEFAULTS.hoverColor,
-    bg: '#ffffff',
+    bg: '#F9FAFB',
   },
   look: {
     size: [DEFAULTS.size, 1, 12, 1] as [number, number, number, number],

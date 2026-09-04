@@ -18,16 +18,16 @@ export function isEasing(value: string): boolean {
 }
 
 export const DEFAULTS = {
-  color: '#99a1af',
-  appearColor: '#ffffff',
-  hoverColor: '#111827',
-  size: 4,
-  speed: 120,
-  fade: 280,
-  easing: 'ease-in-out' as EasingName,
-  trail: 1,
-  order: 'design' as const,
-  hoverStagger: 0,
+  color: '#ffffff',
+  appearColor: '#99A1AF',
+  hoverColor: '#99A1AF',
+  size: 3,
+  speed: 40,
+  fade: 80,
+  easing: 'cubic-bezier(0.4, 0, 1, 1)' as EasingName,
+  trail: 3,
+  order: 'random' as const,
+  hoverStagger: 6,
   glow: false,
   gap: 0,
   paused: false,
@@ -52,7 +52,7 @@ export const STYLES = /* css */ `
   --ps-fade: ${DEFAULTS.fade}ms;
   --ps-easing: ${DEFAULTS.easing};
   --ps-cell: ${DEFAULTS.size}px;
-  --ps-hover-stagger: 0ms;
+  --ps-hover-stagger: ${DEFAULTS.hoverStagger}ms;
   --ps-w: 0;
   --ps-h: 0;
 }
