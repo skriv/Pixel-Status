@@ -1,6 +1,10 @@
 # pixel-status
 
-Framework-agnostic `<pixel-status>` Web Component: a pixel-art **404** that scans one cube at a time, then lights the active cells. Hover tints the whole glyph.
+Framework-agnostic `<pixel-status>` Web Component. It rasterizes `text` with [Departure Mono](https://departuremono.com/) into cubes, then scans an appear-color across them. Hover tints the whole glyph.
+
+Design: [Alex Krivov](https://alexkrivov.com)
+
+Playground: [skriv.github.io/Pixel-Status](https://skriv.github.io/Pixel-Status/)
 
 ## Quick start
 
@@ -8,6 +12,7 @@ Framework-agnostic `<pixel-status>` Web Component: a pixel-art **404** that scan
 git clone https://github.com/skriv/Pixel-Status.git
 cd Pixel-Status
 npm install
+npm run build
 ```
 
 Import the entry (auto-registers `<pixel-status>`):
@@ -16,17 +21,13 @@ Import the entry (auto-registers `<pixel-status>`):
 import 'pixel-status';
 ```
 
-Or after `npm run build`, drop in the IIFE bundle:
+Or drop in the IIFE bundle:
 
 ```html
 <script src="./dist/pixel-status.min.js"></script>
-<pixel-status></pixel-status>
-```
-
-Defaults (omitted attributes use these values):
-
-```html
+<!-- Design: Alex Krivov – alexkrivov.com -->
 <pixel-status
+  text="404"
   color="#ffffff"
   appear-color="#99A1AF"
   hover-color="#99A1AF"
@@ -37,24 +38,25 @@ Defaults (omitted attributes use these values):
   trail="3"
   order="random"
   hover-stagger="6"
+  gap="0"
 ></pixel-status>
 ```
 
+Omitted attributes use the same defaults. `text` is clipped to 24 characters.
+
 ## Playground
 
-Interactive preview with live snippet export:
-
 ```bash
-npm install
 npm run dev
 ```
 
-Open the local Vite URL. Adjust timing, colors, trail, scan order, glow, and copy the generated markup.
+Open the local Vite URL (or the [hosted playground](https://skriv.github.io/Pixel-Status/)). Tweak timing, colors, and motion, then copy the snippet.
 
 ## Attributes
 
 | Attribute | Default | Description |
 | --- | --- | --- |
+| `text` | `404` | String to rasterize (max 24 characters) |
 | `color` | `#ffffff` | Idle cube color |
 | `appear-color` | `#99A1AF` | Color of the active trail cubes |
 | `hover-color` | `#99A1AF` | Color when the pointer is over the glyph |
@@ -65,7 +67,6 @@ Open the local Vite URL. Adjust timing, colors, trail, scan order, glow, and cop
 | `trail` | `3` | How many cubes stay lit |
 | `order` | `random` | Scan order: `design`, `ltr`, `random`, `chars` |
 | `hover-stagger` | `6` | Hover fill delay per cube in ms |
-| `glow` | off | Presence attribute; adds a soft glow |
 | `gap` | `0` | Gap between cubes in px |
 | `paused` | off | Presence attribute; freezes playback |
 
@@ -78,7 +79,7 @@ el.pause();
 el.restart();
 ```
 
-The same values are available as typed properties (`el.speed`, `el.appearColor`, …).
+The same values are available as typed properties (`el.text`, `el.speed`, `el.appearColor`, …).
 
 ## Build
 

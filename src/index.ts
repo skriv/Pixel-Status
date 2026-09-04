@@ -1,3 +1,4 @@
+/*! Design: Alex Krivov – alexkrivov.com */
 /**
  * pixel-status — public entry point.
  * Auto-registers `<pixel-status>` on import.

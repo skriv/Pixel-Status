@@ -1,3 +1,4 @@
+import { CREDIT_COMMENTS, appendCreditComments } from './credits';
 import { isPixelOrder, orderIndices, type Pixel, type PixelOrder } from './pixels';
 import {
   CELL,
@@ -39,7 +40,6 @@ export class PixelStatus extends HTMLElement {
     'trail',
     'order',
     'hover-stagger',
-    'glow',
     'gap',
     'paused',
   ];
@@ -53,6 +53,7 @@ export class PixelStatus extends HTMLElement {
   #timer: number | null = null;
   #hovering = false;
   #fontReady = false;
+  #creditObserver: MutationObserver | null = null;
   #boundEnter = () => this.#onHover(true);
   #boundLeave = () => this.#onHover(false);
   #tick = () => {
@@ -73,12 +74,14 @@ export class PixelStatus extends HTMLElement {
     this.#stage.className = 'stage';
     this.#stage.part = 'stage';
     this.#root.append(style, this.#stage);
+    appendCreditComments(this.#root);
   }
 
   connectedCallback() {
     this.#syncVars();
     this.addEventListener('pointerenter', this.#boundEnter);
     this.addEventListener('pointerleave', this.#boundLeave);
+    this.#installCredits();
     void this.#boot();
   }
 
@@ -86,6 +89,8 @@ export class PixelStatus extends HTMLElement {
     this.#clear();
     this.removeEventListener('pointerenter', this.#boundEnter);
     this.removeEventListener('pointerleave', this.#boundLeave);
+    this.#creditObserver?.disconnect();
+    this.#creditObserver = null;
   }
 
   attributeChangedCallback(name: string) {
@@ -191,13 +196,6 @@ export class PixelStatus extends HTMLElement {
     this.setAttribute('hover-stagger', String(v));
   }
 
-  get glow(): boolean {
-    return this.hasAttribute('glow');
-  }
-  set glow(v: boolean) {
-    this.toggleAttribute('glow', v);
-  }
-
   get gap(): number {
     return clamp(num(this.getAttribute('gap'), DEFAULTS.gap), 0, 24);
   }
@@ -233,6 +231,27 @@ export class PixelStatus extends HTMLElement {
   }
 
   /* ------------------------------ internals ------------------------------ */
+
+  #installCredits() {
+    this.#syncHostCredits();
+    if (this.#creditObserver) return;
+    this.#creditObserver = new MutationObserver(() => this.#syncHostCredits());
+    this.#creditObserver.observe(this, { childList: true });
+  }
+
+  #syncHostCredits() {
+    this.#creditObserver?.disconnect();
+    const wanted = new Set<string>(CREDIT_COMMENTS);
+    for (const node of [...this.childNodes]) {
+      if (node.nodeType === Node.COMMENT_NODE && wanted.has((node as Comment).data)) {
+        node.remove();
+      }
+    }
+    for (let i = CREDIT_COMMENTS.length - 1; i >= 0; i--) {
+      this.prepend(document.createComment(CREDIT_COMMENTS[i]));
+    }
+    this.#creditObserver?.observe(this, { childList: true });
+  }
 
   async #boot() {
     try {

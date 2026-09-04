@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDialKit, useDialKitController, DialRoot } from 'dialkit';
+import { useDialKit, DialRoot } from 'dialkit';
 import 'dialkit/styles.css';
 
 import { PixelStatus } from '../pixel-status';
@@ -39,7 +39,6 @@ const CONFIG = {
   look: {
     size: [DEFAULTS.size, 1, 12, 1] as [number, number, number, number],
     gap: [DEFAULTS.gap, 0, 8, 1] as [number, number, number, number],
-    glow: DEFAULTS.glow,
   },
   motion: {
     trail: [DEFAULTS.trail, 1, 8, 1] as [number, number, number, number],
@@ -59,37 +58,12 @@ const CONFIG = {
     pause: { type: 'action' as const },
     restart: { type: 'action' as const },
   },
-  presets: {
-    idleScan: { type: 'action' as const, label: 'Idle scan' },
-    fastGlitch: { type: 'action' as const, label: 'Fast glitch' },
-    softHover: { type: 'action' as const, label: 'Soft hover' },
-  },
 };
-
-const PRESETS = {
-  idleScan: {
-    timing: { speed: 120, fade: 280, easing: 'ease-in-out' },
-    look: { glow: false, gap: 0 },
-    motion: { trail: 1, order: 'design', hoverStagger: 0 },
-  },
-  fastGlitch: {
-    timing: { speed: 40, fade: 80, easing: 'linear' },
-    look: { glow: true, gap: 1 },
-    motion: { trail: 3, order: 'random', hoverStagger: 4 },
-  },
-  softHover: {
-    timing: { speed: 180, fade: 600, easing: EASINGS[5] },
-    look: { glow: false, gap: 0 },
-    motion: { trail: 1, order: 'ltr', hoverStagger: 18 },
-  },
-} as const;
 
 function Playground() {
   const elRef = useRef<PixelStatus | null>(null);
   const [paused, setPaused] = useState(false);
   const [copied, setCopied] = useState(false);
-
-  const dial = useDialKitController('Pixel Status', CONFIG, { id: 'pixel-status' });
 
   const params = useDialKit('Pixel Status', CONFIG, {
     id: 'pixel-status',
@@ -108,14 +82,7 @@ function Playground() {
       if (action === 'playback.restart' || action === 'restart') {
         setPaused(false);
         el?.restart();
-        return;
       }
-      const presetKey =
-        action.endsWith('idleScan') ? 'idleScan' :
-        action.endsWith('fastGlitch') ? 'fastGlitch' :
-        action.endsWith('softHover') ? 'softHover' :
-        null;
-      if (presetKey) dial.setValues(PRESETS[presetKey]);
     },
   });
 
@@ -133,7 +100,6 @@ function Playground() {
     el.trail = params.motion.trail;
     el.order = params.motion.order as PixelOrder;
     el.hoverStagger = params.motion.hoverStagger;
-    el.glow = params.look.glow;
     el.gap = params.look.gap;
     el.paused = paused;
   }, [params, paused]);
@@ -150,7 +116,6 @@ function Playground() {
     trail: params.motion.trail,
     order: params.motion.order as PixelOrder,
     hoverStagger: params.motion.hoverStagger,
-    glow: params.look.glow,
     gap: params.look.gap,
   });
 
@@ -182,6 +147,14 @@ function Playground() {
           dangerouslySetInnerHTML={{ __html: highlightSnippet(snippet) }}
         />
       </div>
+      <a
+        className="repo"
+        href="https://github.com/skriv/Pixel-Status"
+        target="_blank"
+        rel="noreferrer"
+      >
+        github.com/skriv/Pixel-Status
+      </a>
     </div>
   );
 }
@@ -192,15 +165,11 @@ export function App() {
       <div className="wrap">
         <header>
           <h1>&lt;pixel-status&gt;</h1>
-          <p>
-            Pixel text in Departure Mono. Cubes stay visible; appear color
-            overlays them one by one. Type in the DialKit panel.
-          </p>
         </header>
         <h2>Playground</h2>
         <Playground />
       </div>
-      <DialRoot theme="light" position="top-right" defaultOpen productionEnabled />
+      <DialRoot theme="light" position="top-right" defaultOpen={false} productionEnabled />
     </>
   );
 }

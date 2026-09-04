@@ -11,7 +11,15 @@ export default defineConfig({
       fileName: (format) =>
         format === 'iife' ? 'pixel-status.min.js' : 'pixel-status.esm.js',
     },
-    minify: 'esbuild',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        passes: 2,
+        drop_console: true,
+        drop_debugger: true,
+      },
+      format: { comments: false },
+    },
     target: 'es2020',
     sourcemap: true,
     outDir: 'dist',
