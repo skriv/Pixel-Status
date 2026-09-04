@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>&lt;pixel-status&gt; — playground</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f5f6f8;
+        --panel: #ffffff;
+        --panel-2: #f9fafb;
+        --line: #e5e7eb;
+        --text: #111827;
+        --muted: #6b7280;
+        --accent: #2563eb;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 1080px; margin: 0 auto; padding: 48px 24px 96px; }
+      header h1 { font-size: 30px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.02em; }
+      header p { color: var(--muted); margin: 0 0 4px; max-width: 70ch; }
+      h2 {
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin: 56px 0 18px;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 24px;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+      }
+      .play { display: flex; flex-direction: column; gap: 0; }
+      .stage {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        min-height: 240px;
+        margin-bottom: 16px;
+        transition: background 0.25s ease;
+      }
+      .stage .hint {
+        font-size: 11px;
+        color: var(--muted);
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .code-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+      .code-header span {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      button.act {
+        background: var(--panel);
+        color: var(--text);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 6px 12px;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      button.act:hover { border-color: var(--accent); color: var(--accent); }
+      pre.code {
+        margin: 0;
+        background: #f8fafc;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 16px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12.5px;
+        line-height: 1.6;
+        overflow-x: auto;
+        color: #334155;
+      }
+      pre.code .k { color: #7c3aed; }
+      pre.code .s { color: #059669; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+{
+  "name": "pixel-status",
+  "version": "1.0.0",
+  "description": "A framework-agnostic <pixel-status> Web Component — sequential pixel fade with hover-all.",
+  "type": "module",
+  "main": "./dist/pixel-status.min.js",
+  "module": "./dist/pixel-status.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/pixel-status.esm.js",
+      "default": "./dist/pixel-status.min.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run build:lib && npm run build:site",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.build.json",
+    "build:site": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "web-component",
+    "custom-element",
+    "pixel",
+    "animation"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.7.0",
+    "dialkit": "^1.2.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0"
+  }
+}
